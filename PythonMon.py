@@ -62,7 +62,8 @@ URL_MAP = {
     "Macaco.png": "https://raw.githubusercontent.com/Samuenpd/meu-jogo-imagens/main/Macaco.png",
     "Lobo.png": "https://raw.githubusercontent.com/Samuenpd/meu-jogo-imagens/main/Lobo.png",
     "Gato.png": "https://raw.githubusercontent.com/Samuenpd/meu-jogo-imagens/main/Gato.png",
-    "Slime.png": "https://raw.githubusercontent.com/Samuenpd/meu-jogo-imagens/main/Slime.png",
+    "Slime.png": "https://github.com/Samuenpd/meu-jogo-imagens/blob/main/Slime.png?raw=true",
+    'michael.png': 'https://github.com/Samuenpd/meu-jogo-imagens/blob/main/michael.png?raw=true'
 }
 
 # -------------------- Função para carregar imagens (local ou web, sem salvar em disco) --------------------
@@ -153,10 +154,10 @@ PERSONAGENS_JOGAVEIS = {
     },
     "Bulbassaur": {
         "nome": "Bulbassaur",
-        "imagem_normal": "j1.png",
-        "imagem_dano": "j1.png",
-        "imagem_morto": "j1.png",
-        "imagem_hp_baixo": "j1.png",
+        "imagem_normal": "michael.png",
+        "imagem_dano": "michael.png",
+        "imagem_morto": "michael.png",
+        "imagem_hp_baixo": "michael.png",
         "vida": 999,
         "mana": 999,
         "dano_espada": 999,
@@ -382,15 +383,15 @@ class PainelStatus:
         hp_bar_x, hp_bar_y, hp_bar_width, hp_bar_height = self.x + 25, self.y + 155, 150, 15
         porcentagem_vida = max(0, self.vida / self.vida_max) if self.vida_max else 0
         cor_hp = (255, 215, 0) if porcentagem_vida > 0.9 else (0, 160, 0)
-        pygame.draw.rect(tela, (255, 0, 0), (hp_bar_x, hp_bar_y, hp_bar_width, hp_bar_height))
-        pygame.draw.rect(tela, cor_hp, (hp_bar_x, hp_bar_y, int(hp_bar_width * porcentagem_vida), hp_bar_height))
+        pygame.draw.rect(tela, (255, 0, 0), (hp_bar_x, hp_bar_y, hp_bar_width, hp_bar_height),border_radius=500)
+        pygame.draw.rect(tela, cor_hp, (hp_bar_x, hp_bar_y, int(hp_bar_width * porcentagem_vida), hp_bar_height),border_radius=500)
         vida_txt = fonte_pequena.render(f"{self.vida}/{self.vida_max}", True, (255, 255, 255))
         tela.blit(vida_txt, vida_txt.get_rect(center=(hp_bar_x + hp_bar_width / 2, hp_bar_y + hp_bar_height / 2)))
 
         mp_bar_x, mp_bar_y, mp_bar_width, mp_bar_height = self.x + 25, self.y + 170, 150, 15
         porcentagem_mana = max(0, self.mana / self.mana_max) if self.mana_max else 0
-        pygame.draw.rect(tela, (0, 0, 128), (mp_bar_x, mp_bar_y, mp_bar_width, mp_bar_height))
-        pygame.draw.rect(tela, (0, 128, 255), (mp_bar_x, mp_bar_y, int(mp_bar_width * porcentagem_mana), mp_bar_height))
+        pygame.draw.rect(tela, (0, 0, 128), (mp_bar_x, mp_bar_y, mp_bar_width, mp_bar_height),border_radius=500)
+        pygame.draw.rect(tela, (0, 128, 255), (mp_bar_x, mp_bar_y, int(mp_bar_width * porcentagem_mana), mp_bar_height),border_radius=500)
         mana_txt = fonte_pequena.render(f"{self.mana}/{self.mana_max}", True, (255, 255, 255))
         tela.blit(mana_txt, mana_txt.get_rect(center=(mp_bar_x + mp_bar_width / 2, mp_bar_y + mp_bar_height / 2)))
 
@@ -689,3 +690,4 @@ while rodando:
 
 pygame.quit()
 sys.exit()
+pygame.draw.rect
