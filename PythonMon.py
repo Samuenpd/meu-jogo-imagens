@@ -69,21 +69,34 @@ URL_MAP = {
 # -------------------- Função para carregar imagens (local ou web, sem salvar em disco) --------------------
 def carregar_imagem(caminho, largura=None, altura=None, fallback_cor=(80, 80, 80), on_fail="surface"):
     """
-    - caminho: pode ser:
-        * um caminho local existente (ex: "./imgs/pann.png")
-        * uma URL completa (http(s)://...)
-        * apenas o nome do arquivo que exista em URL_MAP (ex: "pann.png")
-    - largura, altura: para redimensionar
-    - fallback_cor: cor usada para gerar um surface de fallback
-    - on_fail: "surface" (retorna um surface fallback) ou "none" (retorna None)
+    - caminho pode ser:
+        * um arquivo local (./imgs/xxx.png)
+        * nome presente no URL_MAP
+        * URL completa
+    - se não existir local, tenta baixar e **salvar no disco**
     """
     try:
         if not caminho:
             raise FileNotFoundError("caminho vazio")
 
-        # se for caminho local existente, carrega localmente
+        # caminho completo local
         if os.path.exists(caminho):
             img = pygame.image.load(caminho).convert_alpha()
+            if largura and altura:
+                img = pygame.transform.scale(img, (largura, altura))
+            return img
+
+        # garante que existe a pasta "assets"
+        pasta = "imagens"
+        if not os.path.exists(pasta):
+            os.makedirs(pasta)
+
+        nome_arquivo = os.path.basename(caminho)
+        caminho_local = os.path.join(pasta, nome_arquivo)
+
+        # se já baixou antes, usa do disco
+        if os.path.exists(caminho_local):
+            img = pygame.image.load(caminho_local).convert_alpha()
             if largura and altura:
                 img = pygame.transform.scale(img, (largura, altura))
             return img
@@ -91,23 +104,24 @@ def carregar_imagem(caminho, largura=None, altura=None, fallback_cor=(80, 80, 80
         # se for URL direta
         if str(caminho).lower().startswith("http"):
             url = caminho
-        # se estiver no mapeamento, usa a URL correspondente
+        # se estiver no mapeamento
         elif caminho in URL_MAP:
             url = URL_MAP[caminho]
         else:
             url = f"https://raw.githubusercontent.com/Samuenpd/meu-jogo-imagens/main/{caminho}"
 
-        # tenta baixar e carregar via BytesIO (sem salvar em disco)
+        # baixa e SALVA no disco
         try:
+            print(f"[download] Baixando {url}")
             resp = requests.get(url, timeout=10)
             resp.raise_for_status()
-            img = pygame.image.load(BytesIO(resp.content)).convert_alpha()
+            with open(caminho_local, "wb") as f:
+                f.write(resp.content)
+            img = pygame.image.load(caminho_local).convert_alpha()
             if largura and altura:
                 img = pygame.transform.scale(img, (largura, altura))
             return img
         except Exception as e:
-            # erro ao buscar a URL
-            # print opcional para debug
             print(f"[carregar_imagem] falha ao baixar {url}: {e}")
             if on_fail == "none":
                 return None
@@ -118,7 +132,6 @@ def carregar_imagem(caminho, largura=None, altura=None, fallback_cor=(80, 80, 80
             return surf
 
     except Exception as e:
-        # erro geral (ex: caminho vazio)
         print(f"[carregar_imagem] erro: {e}")
         if on_fail == "none":
             return None
