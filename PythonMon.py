@@ -62,8 +62,9 @@ URL_MAP = {
     "Macaco.png": "https://raw.githubusercontent.com/Samuenpd/meu-jogo-imagens/main/Macaco.png",
     "Lobo.png": "https://raw.githubusercontent.com/Samuenpd/meu-jogo-imagens/main/Lobo.png",
     "Gato.png": "https://raw.githubusercontent.com/Samuenpd/meu-jogo-imagens/main/Gato.png",
-    "Slime.png": "https://github.com/Samuenpd/meu-jogo-imagens/blob/main/Slime.png?raw=true",
-    'michael.png': 'https://github.com/Samuenpd/meu-jogo-imagens/blob/main/michael.png?raw=true'
+    "Slime.png": "https://raw.githubusercontent.com/Samuenpd/meu-jogo-imagens/main/Slime.png",
+    'michael.png': 'https://raw.githubusercontent.com/Samuenpd/meu-jogo-imagens/main/michael.png',
+    'tela_inicial.jpeg': 'https://raw.githubusercontent.com/Samuenpd/meu-jogo-imagens/main/tela_inicial.jpeg'
 }
 
 # -------------------- Função para carregar imagens (local ou web, sem salvar em disco) --------------------
@@ -190,6 +191,7 @@ fundo_sol = carregar_imagem('o_sol.webp', LARGURA_TELA, ALTURA_TELA, (0, 0, 0))
 
 imagem_menu = carregar_imagem('menu.png', 50, 50, (100, 100, 100))
 imagem_painel_fundo = carregar_imagem('painel_status.png', 200, 200, (50, 50, 50))
+imagem_tela_inicial = carregar_imagem("tela_inicial.jpeg", LARGURA_TELA, ALTURA_TELA, (0, 0, 0))
 
 imagem_botao_lutar = carregar_imagem('botao_lutar.png', 300, 50, (180, 40, 40))
 imagem_botao_fugir = carregar_imagem('botao_fugir.png', 300, 50, (40, 40, 180))
@@ -293,7 +295,7 @@ class Botao:
         self.cor_texto = cor_texto
         self.imagem = imagem
 
-    def desenhar(self, tela):
+    def desenhar(self, tela, debug=False):
         if self.imagem:
             imagem_rect = self.imagem.get_rect(center=self.rect.center)
             tela.blit(self.imagem, imagem_rect)
@@ -301,13 +303,17 @@ class Botao:
                 texto_renderizado = fonte.render(self.texto, True, self.cor_texto or BRANCO)
                 texto_rect = texto_renderizado.get_rect(center=self.rect.center)
                 tela.blit(texto_renderizado, texto_rect)
-        else:
+        elif self.cor: # Adicione esta condição
             pygame.draw.rect(tela, self.cor or CINZA_CLARO, self.rect)
             if self.texto:
                 texto_renderizado = fonte.render(self.texto, True, self.cor_texto or PRETO)
                 texto_rect = texto_renderizado.get_rect(center=self.rect.center)
                 tela.blit(texto_renderizado, texto_rect)
-
+        else:
+            if self.texto:
+                texto_renderizado = fonte.render(self.texto, True, self.cor_texto or PRETO)
+                texto_rect = texto_renderizado.get_rect(center=self.rect.center)
+                tela.blit(texto_renderizado, texto_rect)
     def is_clicado(self, pos):
         return self.rect.collidepoint(pos)
 
@@ -499,8 +505,8 @@ botao_sair_menu = Botao(LARGURA_TELA // 2 - 150, ALTURA_TELA // 2 + 20, 300, 50,
 
 botao_pausa_superior = Botao(LARGURA_TELA - 60, 10, 50, 50, imagem=imagem_menu)
 
-botao_iniciar = Botao(LARGURA_TELA // 2 - 100, ALTURA_TELA // 2 - 30, 200, 50, "Lutar", VERDE, BRANCO)
-botao_sair_jogo = Botao(LARGURA_TELA // 2 - 100, ALTURA_TELA // 2 + 40, 200, 50, "Desistir...", VERMELHO, BRANCO)
+botao_iniciar = Botao(240, 310, 320, 70)
+botao_sair_jogo = Botao(240, 405, 320, 70) 
 
 # Cartas
 cartas_personagens = []
@@ -543,6 +549,7 @@ while rodando:
             pos = pygame.mouse.get_pos()
 
             if estado_do_jogo == "menu_inicial":
+                tela.blit(imagem_tela_inicial, (0, 0))
                 if botao_iniciar.is_clicado(pos):
                     estado_do_jogo = "selecao_personagem"
                 elif botao_sair_jogo.is_clicado(pos):
@@ -605,9 +612,7 @@ while rodando:
     tela.fill(PRETO)
 
     if estado_do_jogo == "menu_inicial":
-        texto_titulo_menu = fonte.render("Rpanng", True, BRANCO)
-        texto_titulo_menu_rect = texto_titulo_menu.get_rect(center=(LARGURA_TELA // 2, ALTURA_TELA // 2 - 100))
-        tela.blit(texto_titulo_menu, texto_titulo_menu_rect)
+        tela.blit(imagem_tela_inicial, (0, 0))
         botao_iniciar.desenhar(tela)
         botao_sair_jogo.desenhar(tela)
 
