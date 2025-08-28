@@ -6,7 +6,6 @@ import requests
 from io import BytesIO
 import time
 
-# tenta manter o diretório do script como cwd
 try:
     diretorio_atual = os.path.dirname(os.path.abspath(sys.argv[0]))
     os.chdir(diretorio_atual)
@@ -44,7 +43,6 @@ COR_CARTA = (40, 40, 60)
 COR_BORDA_CARTA = (100, 100, 120)
 
 # -------------------- Mapeamento de nomes de arquivos -> URLs (raw) --------------------
-# se futuramente você adicionar/alterar imagens, mantenha esse mapeamento atualizado
 URL_MAP = {
     "pann.png": "https://raw.githubusercontent.com/Samuenpd/meu-jogo-imagens/main/pann.png",
     "pann_dano.png": "https://raw.githubusercontent.com/Samuenpd/meu-jogo-imagens/main/pann_dano.png",
@@ -69,25 +67,16 @@ URL_MAP = {
 
 # -------------------- Função para carregar imagens (local ou web, sem salvar em disco) --------------------
 def carregar_imagem(caminho, largura=None, altura=None, fallback_cor=(80, 80, 80), on_fail="surface"):
-    """
-    - caminho pode ser:
-        * um arquivo local (./imgs/xxx.png)
-        * nome presente no URL_MAP
-        * URL completa
-    - se não existir local, tenta baixar e **salvar no disco**
-    """
     try:
         if not caminho:
             raise FileNotFoundError("caminho vazio")
 
-        # caminho completo local
         if os.path.exists(caminho):
             img = pygame.image.load(caminho).convert_alpha()
             if largura and altura:
                 img = pygame.transform.scale(img, (largura, altura))
             return img
 
-        # garante que existe a pasta "assets"
         pasta = "imagens"
         if not os.path.exists(pasta):
             os.makedirs(pasta)
@@ -95,23 +84,19 @@ def carregar_imagem(caminho, largura=None, altura=None, fallback_cor=(80, 80, 80
         nome_arquivo = os.path.basename(caminho)
         caminho_local = os.path.join(pasta, nome_arquivo)
 
-        # se já baixou antes, usa do disco
         if os.path.exists(caminho_local):
             img = pygame.image.load(caminho_local).convert_alpha()
             if largura and altura:
                 img = pygame.transform.scale(img, (largura, altura))
             return img
 
-        # se for URL direta
         if str(caminho).lower().startswith("http"):
-            url = caminho
-        # se estiver no mapeamento
+            url = caminho_carta
         elif caminho in URL_MAP:
             url = URL_MAP[caminho]
         else:
             url = f"https://raw.githubusercontent.com/Samuenpd/meu-jogo-imagens/main/{caminho}"
 
-        # baixa e SALVA no disco
         try:
             print(f"[download] Baixando {url}")
             resp = requests.get(url, timeout=10)
@@ -237,7 +222,6 @@ class CartaPersonagem:
 
     def desenhar(self, tela):
         if self.imagem_carta_completa is not None:
-            # se a imagem da carta for maior/menor que o rect, ela é desenhada centrada (mantém tamanho)
             img_rect = self.imagem_carta_completa.get_rect(center=self.rect.center)
             tela.blit(self.imagem_carta_completa, img_rect)
         else:
@@ -303,7 +287,7 @@ class Botao:
                 texto_renderizado = fonte.render(self.texto, True, self.cor_texto or BRANCO)
                 texto_rect = texto_renderizado.get_rect(center=self.rect.center)
                 tela.blit(texto_renderizado, texto_rect)
-        elif self.cor: # Adicione esta condição
+        elif self.cor:
             pygame.draw.rect(tela, self.cor or CINZA_CLARO, self.rect)
             if self.texto:
                 texto_renderizado = fonte.render(self.texto, True, self.cor_texto or PRETO)
@@ -685,7 +669,6 @@ while rodando:
             botao_sair_menu.desenhar(tela)
 
     elif estado_do_jogo == "transicao":
-        # Próximo monstro
         monstro_atual = random.choice(monstros_disponiveis)
         monstro_atual.vida = monstro_atual.vida_max
         log.adicionar_mensagem(f"Um novo monstro apareceu: {monstro_atual.nome}!")
