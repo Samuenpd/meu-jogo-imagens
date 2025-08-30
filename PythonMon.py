@@ -71,7 +71,11 @@ URL_MAP = {
     "Gato.png": "https://raw.githubusercontent.com/Samuenpd/meu-jogo-imagens/main/Gato.png",
     "Slime.png": "https://raw.githubusercontent.com/Samuenpd/meu-jogo-imagens/main/Slime.png",
     "michael.png": "https://raw.githubusercontent.com/Samuenpd/meu-jogo-imagens/main/michael.png",
+    "michael_dano.png": "https://raw.githubusercontent.com/Samuenpd/meu-jogo-imagens/main/michael_dano.png",
+    "michael_meia_vida.png": "https://raw.githubusercontent.com/Samuenpd/meu-jogo-imagens/main/michael_meia_vida.png",
+    "michael_triste.png": "https://raw.githubusercontent.com/Samuenpd/meu-jogo-imagens/main/michael_triste.png",
     "tela_inicial.jpeg": "https://raw.githubusercontent.com/Samuenpd/meu-jogo-imagens/main/tela_inicial.jpeg",
+    "fundo_cartas.jpeg": "https://raw.githubusercontent.com/Samuenpd/meu-jogo-imagens/main/fundo_cartas.png",
     "fundo_slime": "https://raw.githubusercontent.com/Samuenpd/meu-jogo-imagens/main/fundo_slime.png",
     "botao_espada.png": "https://raw.githubusercontent.com/Samuenpd/meu-jogo-imagens/main/botao_espada.png",
     "botao_magia.png": "https://raw.githubusercontent.com/Samuenpd/meu-jogo-imagens/main/botao_magia.png",
@@ -80,6 +84,9 @@ URL_MAP = {
     "fundo_lobo.png": "https://raw.githubusercontent.com/Samuenpd/meu-jogo-imagens/main/fundo_lobo.png",
     "fundo_macaco.png": "https://raw.githubusercontent.com/Samuenpd/meu-jogo-imagens/main/fundo_macaco.png",
     "fundo_gato.png": "https://raw.githubusercontent.com/Samuenpd/meu-jogo-imagens/main/fundo_gato.png",
+    "botao_beat_it.png": "https://raw.githubusercontent.com/Samuenpd/meu-jogo-imagens/main/botao_beat_it.png",
+    "botao_thriller.png": "https://raw.githubusercontent.com/Samuenpd/meu-jogo-imagens/main/botao_thriller.png",
+    "botao_earth_song.png": "https://github.com/Samuenpd/meu-jogo-imagens/blob/91daae905ca9786c1c128ace50563bf4486ec8d7/botao_earth_song.png",
 }
 
 URL_FONTES = {
@@ -92,12 +99,6 @@ URL_MUSICAS = {
 
 # -------------------- Carregar imagem com cache local --------------------
 def carregar_imagem(caminho, largura=None, altura=None, fallback_cor=(80, 80, 80), on_fail="surface"):
-    """
-    Tenta em ordem:
-    1) caminho direto local
-    2) pasta ./imagens/<nome>
-    3) baixa por URL_MAP (ou URL direta se 'caminho' já for http) e salva em ./imagens
-    """
     try:
         if not caminho:
             raise FileNotFoundError("caminho vazio")
@@ -123,7 +124,7 @@ def carregar_imagem(caminho, largura=None, altura=None, fallback_cor=(80, 80, 80
 
         # 3) Baixar
         if str(caminho).lower().startswith("http"):
-            url = caminho  # <-- correção: usa a própria URL
+            url = caminho
         elif caminho in URL_MAP:
             url = URL_MAP[caminho]
         else:
@@ -202,11 +203,11 @@ PERSONAGENS_JOGAVEIS = {
     "Michael": {
         "nome": "Michael",
         "imagem_normal": "michael.png",
-        "imagem_dano": "michael.png",
-        "imagem_morto": "michael.png",
-        "imagem_hp_baixo": "michael.png",
-        "vida": 999,
-        "mana": 999,
+        "imagem_dano": "michael_dano.png",
+        "imagem_morto": "michael_triste.png",
+        "imagem_hp_baixo": "michael_meia_vida.png",
+        "vida": 99,
+        "mana": 99,
         "dano_espada": 999,
         "dano_magia": 999,
         "imagem_carta": "carta_michael.jpeg",
@@ -229,6 +230,7 @@ fundo_gato = carregar_imagem('fundo_gato.png', LARGURA_TELA, ALTURA_TELA, (0, 0,
 imagem_menu = carregar_imagem('menu.png', 50, 50, (100, 100, 100))
 imagem_painel_fundo = carregar_imagem('painel_status.png', 155, 226, (50, 50, 50))
 imagem_tela_inicial = carregar_imagem("tela_inicial.jpeg", LARGURA_TELA, ALTURA_TELA, (0, 0, 0))
+imagem_tela_seleção = carregar_imagem('fundo_cartas.png', LARGURA_TELA, ALTURA_TELA, (0, 0, 0))
 
 imagem_botao_lutar = carregar_imagem('botao_lutar.png', 336, 79, (180, 40, 40))
 imagem_botao_fugir = carregar_imagem('botao_fugir.png', 336, 79, (40, 40, 180))
@@ -594,6 +596,7 @@ while rodando:
                     rodando = False
 
             elif estado_do_jogo == "selecao_personagem":
+                tela.blit(imagem_tela_seleção, (0, 0))
                 for carta in cartas_personagens:
                     if carta.is_clicado(pos):
                         dados_escolhidos = carta.dados_personagem
@@ -619,9 +622,13 @@ while rodando:
                             imagem_painel_fundo
                         )
                         if jogador.nome == "Michael":
-                            botao_espada.texto = "Beat It"
-                            botao_magia.texto = "Thriller"
-                            botao_descansar.texto = "Earth Song"
+                            imagem_botao_beat_it = carregar_imagem("botao_beat_it.png", 183, 53, (180, 40, 40))
+                            imagem_botao_thriller = carregar_imagem("botao_thriller.png", 183, 53, (180, 40, 40))
+                            imagem_botao_earth_song = carregar_imagem("botao_earth_song.png", 183, 53, (40, 180, 40))
+                            botao_beat_it = Botao(120, 411, 336, 79, imagem=imagem_botao_beat_it)
+                            botao_thriller = Botao(340, 411, 336, 79, imagem=imagem_botao_thriller)
+                            botao_earth_song = Botao(int(120), int(483.15), 336, 79, imagem=imagem_botao_earth_song)
+                            botoes_luta = [botao_beat_it, botao_thriller, botao_earth_song]
                         else:
                             botao_espada.texto = "Espada"
                             botao_magia.texto = "Magia"
@@ -638,18 +645,30 @@ while rodando:
                             menu_acao = "ataque"
                         elif botao_fugir.is_clicado(pos):
                             estado_do_jogo = "transicao"
-                            log.adicionar_mensagem("Você fugiu!")
+                            log.adicionar_mensagem("fugiu!")
                     elif menu_acao == "ataque":
-                        if botao_espada.is_clicado(pos):
-                            atacar(jogador, monstro_atual, "espada")
-                        elif botao_magia.is_clicado(pos):
-                            atacar(jogador, monstro_atual, "magia")
-                        elif botao_voltar.is_clicado(pos):
-                            menu_acao = 'principal'
-                        elif botao_descansar.is_clicado(pos):
-                            recuperar_mana(jogador)
-                            jogador_atacou = True
-                            tempo_ataque_jogador_fim = pygame.time.get_ticks() + 1500
+                        if jogador.nome == "Michael":
+                            if botao_beat_it.is_clicado(pos):
+                                atacar(jogador, monstro_atual, "espada")
+                            elif botao_thriller.is_clicado(pos):
+                                atacar(jogador, monstro_atual, "magia")
+                            elif botao_earth_song.is_clicado(pos):
+                                recuperar_mana(jogador)
+                                jogador_atacou = True
+                                tempo_ataque_jogador_fim = pygame.time.get_ticks() + 1500
+                            elif botao_voltar.is_clicado(pos):
+                                menu_acao = 'principal'
+                        else:
+                            if botao_espada.is_clicado(pos):
+                                atacar(jogador, monstro_atual, "espada")
+                            elif botao_magia.is_clicado(pos):
+                                atacar(jogador, monstro_atual, "magia")
+                            elif botao_voltar.is_clicado(pos):
+                                menu_acao = 'principal'
+                            elif botao_descansar.is_clicado(pos):
+                                recuperar_mana(jogador)
+                                jogador_atacou = True
+                                tempo_ataque_jogador_fim = pygame.time.get_ticks() + 1500
 
             elif estado_do_jogo == "derrota":
                 if botao_continuar.is_clicado(pos):
@@ -672,6 +691,7 @@ while rodando:
         botao_sair_jogo.desenhar(tela)
 
     elif estado_do_jogo == "selecao_personagem":
+        tela.blit(imagem_tela_seleção, (0, 0))
         texto_titulo = fonte.render("Escolha seu Personagem", True, BRANCO)
         tela.blit(texto_titulo, texto_titulo.get_rect(center=(LARGURA_TELA // 2, 100)))
         for carta in cartas_personagens:
@@ -722,10 +742,15 @@ while rodando:
             botao_atacar.desenhar(tela)
             botao_fugir.desenhar(tela)
         elif menu_acao == "ataque":
-            botao_espada.desenhar(tela)
-            botao_magia.desenhar(tela)
-            botao_voltar.desenhar(tela)
-            botao_descansar.desenhar(tela)
+            if jogador.nome == "Michael":
+                for botao in botoes_luta:
+                    botao.desenhar(tela)
+                    botao_voltar.desenhar(tela)
+            else:
+                botao_espada.desenhar(tela)
+                botao_magia.desenhar(tela)
+                botao_voltar.desenhar(tela)
+                botao_descansar.desenhar(tela)
 
         if estado_do_jogo == "menu_pausa":
             s = pygame.Surface((LARGURA_TELA, ALTURA_TELA), pygame.SRCALPHA)
@@ -760,6 +785,5 @@ while rodando:
     pygame.display.flip()
     clock.tick(60)
 
-pygame.quit()
 sys.exit()
 pygame.draw.rect
