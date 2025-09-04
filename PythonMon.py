@@ -210,10 +210,10 @@ PERSONAGENS_JOGAVEIS = {
         "imagem_dano": "michael_dano.png",
         "imagem_morto": "michael_triste.png",
         "imagem_hp_baixo": "michael_meia_vida.png",
-        "vida": 1,
-        "mana": 99,
-        "dano_espada": 999,
-        "dano_magia": 999,
+        "vida": 150,
+        "mana": 350,
+        "dano_espada": 45,
+        "dano_magia": 90,
         "imagem_carta": "carta_michael.jpeg",
     }
 }
@@ -242,7 +242,7 @@ imagem_botao_espada = carregar_imagem('botao_espada.png', 183, 53, (40, 40, 180)
 imagem_botao_magia = carregar_imagem('botao_magia.png', 183, 53, (40, 40, 180))
 imagem_botao_descansar = carregar_imagem('botao_descansar.png', 183, 53, (40, 40, 180))
 imagem_botao_voltar = carregar_imagem('botao_voltar.png', 183, 53, (40, 40, 180))
-imagem_botao_voltarmenu = carregar_imagem('barra_menu.png', 340, 84, (40, 40, 180))
+imagem_botao_voltarmenu = carregar_imagem('barra_menu.png', 370, 84, (40, 40, 180))
 imagem_botao_continuar = carregar_imagem('barra_continuar.png', 340, 84, (40, 40, 180))
 imagem_botao_voltarluta = carregar_imagem('barra_lutar.png', 340, 84, (40, 40, 180))
 imagem_botao_desistir = carregar_imagem('barra_desistir.png', 340, 84, (40, 40, 180))
@@ -549,7 +549,7 @@ botao_continuar = Botao(232, 370, 340, 84, imagem=imagem_botao_voltarluta)
 botao_sair_derrota = Botao(231, 460, 340, 84, imagem=imagem_botao_desistir)
 
 botao_continuar_batalha = Botao( 250, 275, 330, 84, imagem=imagem_botao_continuar)
-botao_sair_menu = Botao( 250, 376, 330, 84, imagem=imagem_botao_voltarmenu)
+botao_sair_menu = Botao( 260, 376, 330, 84, imagem=imagem_botao_voltarmenu)
 
 botao_pausa_superior = Botao(LARGURA_TELA - 60, 10, 50, 50, imagem=imagem_menu)
 
